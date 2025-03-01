@@ -14,8 +14,8 @@
   "files": [
     "dist"
   ],
-  "keywords": [],
-  "author": "",
+  "keywords": ["expo", "expo-router", "react-native", "analytics", "expofast"],
+  "author": "josepvidalvidal@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "uuidv7": "^1",

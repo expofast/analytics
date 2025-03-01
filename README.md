@@ -1,8 +1,12 @@
 # Expofast Analytics
 
-Expofast Analytics is an easy-to-use analytics library for React Native apps using Expo. It helps track user activity, including navigation events, user actions, app state changes, and errors, providing valuable insights into user behavior.
+Track your React Native app like a pro with **Expofast Analytics**. 
 
-This package integrates seamlessly with `expo-router` and supports event tracking via `expofast.app`, where you can monitor data in both development and production environments.
+Get real-time 📈 insights on navigation, user actions, app state changes, and errors—all in one place. 
+
+Works seamlessly with `expo-router` and sends events straight to [expofast.app](https://expofast.app). 
+
+Dev mode? Prod mode? We've got both. 🚀
 
 ## Features
 
@@ -36,7 +40,7 @@ import { createAnalyticsClient } from "expofast-analytics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 
-const client = createAnalyticsClient({
+const analyticsClient = createAnalyticsClient({
   apiKey: process.env.EXPO_PUBLIC_EXPOFAST_ANALYTICS_KEY as string,
   appVersion: Application.nativeApplicationVersion as string,
   storage: {
@@ -55,7 +59,7 @@ import { ExpofastAnalyticsProvider } from "expofast-analytics";
 
 export default function RootLayout() {
   return (
-    <ExpofastAnalyticsProvider client={client}>
+    <ExpofastAnalyticsProvider client={analyticsClient}>
       <Content />
     </ExpofastAnalyticsProvider>
   );
