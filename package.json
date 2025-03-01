@@ -1,0 +1,54 @@
+{
+  "name": "expofast-analytics",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "An easy-to-use analytics library for React Native apps using `expo` and `expo-router`. It helps track user activity, including navigation events, user actions, app state changes, and errors, providing valuable insights into user behavior.",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build",
+    "publish": "npm run build && npm publish"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "uuidv7": "^1",
+    "@rollup/plugin-commonjs": "^28",
+    "@rollup/plugin-node-resolve": "^16",
+    "@rollup/plugin-typescript": "^12",
+    "@types/react": "^18",
+    "@types/react-native": "^0.73",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10",
+    "eslint-plugin-prettier": "^5",
+    "eslint-plugin-react": "^7",
+    "eslint-plugin-react-hooks": "^5",
+    "eslint-plugin-react-native": "^5",
+    "expo-router": "^4",
+    "prettier": "^3",
+    "react": "^18",
+    "react-native": "^0.76",
+    "expo-device": "^7",
+    "rollup": "^4",
+    "rollup-plugin-dts": "^6",
+    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@rollup/plugin-babel": "^6",
+    "@babel/preset-react": "^7"
+  },
+  "peerDependencies": {
+    "expo-router": "^4",
+    "expo-device": "^7",
+    "react": "^18",
+    "react-native": "^0.76",
+    "uuidv7": "^1"
+  }
+}
