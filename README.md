@@ -124,8 +124,6 @@ Expofast Analytics automatically tracks:
 
 - **Navigation events**: Captures route changes when using `expo-router`.
 - **App state changes**: Detects when the app goes active/inactive.
-- **User actions**: You can log specific user interactions.
-- **Errors**: Log handled and unhandled errors in your app.
 
 ## Viewing Events
 
@@ -163,7 +161,7 @@ const client = createAnalyticsClient({
 
 ## Contribution
 
-If you encounter any issues or have feature requests, feel free to open an issue in the GitHub repository.
+If you encounter any issues or have feature requests, feel free to open an issue.
 
 ## License
 
