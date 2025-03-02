@@ -24,10 +24,10 @@ export const createAnalyticsClient = (
   configuration: ExpoFastAnalyticsConfig,
 ): ExpoFastClient => {
   if (!configuration) {
-    throw new Error("[expofast-analytics] Configuration is missing");
+    throw new Error("ExpoFast Analytics configuration is missing");
   }
   if (!configuration.apiKey) {
-    throw new Error("[expofast-analytics] Configuration apiKey is missing");
+    throw new Error("ExpoFast Analytics configuration apiKey is missing");
   }
 
   void setIdentifyId({
@@ -60,9 +60,15 @@ export const setIdentifyId = async ({
 };
 
 let isPushingEvents = false;
+let consecutiveFailures = 0;
+let backoffUntil = 0;
 
 const pushEvents = async () => {
   try {
+    if (Date.now() < backoffUntil) {
+      return false;
+    }
+
     const info = {
       platform: Platform.OS,
       osVersion: Device.osVersion,
@@ -90,9 +96,17 @@ const pushEvents = async () => {
       throw new Error(`Could not push events. API status: ${response.status}`);
     }
 
+    consecutiveFailures = 0;
     return true;
   } catch (error) {
+    consecutiveFailures++;
+
     if (config.debug) logError(`On push event`, error);
+
+    if (consecutiveFailures >= 5) {
+      backoffUntil = Date.now() + 60 * 1000;
+    }
+
     return false;
   }
 };
@@ -114,13 +128,11 @@ export const startPushingEventsQueue = () => {
 
 export const pushNavigationEvent = (event: NavigationEvent) => {
   if (config.debug) logEvent(event);
-
   events.push(event);
 };
 
 export const pushStateEvent = (event: StateEvent) => {
   if (config.debug) logEvent(event);
-
   events.push(event);
 };
 
@@ -135,7 +147,6 @@ const identify = (id: string, properties?: Record<string, unknown>) => {
   } satisfies IdentifyEvent;
 
   if (config.debug) logEvent(event);
-
   events.push(event);
 };
 
@@ -178,7 +189,6 @@ const error = (message: string, properties?: Record<string, unknown>) => {
   } satisfies ErrorEvent;
 
   if (config.debug) logEvent(event);
-
   events.push(event);
 };
 
