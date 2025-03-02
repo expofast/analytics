@@ -1,10 +1,4 @@
-import {
-  FC,
-  PropsWithChildren,
-  useEffect,
-  Fragment,
-  useLayoutEffect,
-} from "react";
+import { FC, PropsWithChildren, useEffect, Fragment } from "react";
 import { usePathname, useSegments } from "expo-router";
 import { AppState } from "react-native";
 import {
@@ -28,39 +22,14 @@ const ExpofastAnalyticsProvider: FC<ExpofastAnalyticsProps> = ({
   const segment = useSegments();
   const pathname = usePathname();
 
-  useLayoutEffect(() => {
-    if (!config) {
-      console.warn(
-        "ExpoFast Analytics is not properly configured, please call `createAnalyticsClient` before mounting the provider.",
-      );
-    }
-  }, []);
+  if (!config) {
+    console.warn(
+      "ExpoFast Analytics is not properly configured, please call `createAnalyticsClient` before mounting the provider.",
+    );
+  }
 
   useEffect(() => {
-    if (client?.events?.disableNavigationEvents) return;
-
-    const params = getPathParams(segment, pathname);
-    pushNavigationEvent({
-      type: "navigation",
-      path: `/${segment.join("/")}`,
-      date: getDateForApi(),
-      properties: Object.keys(params).length
-        ? {
-            params,
-          }
-        : undefined,
-    });
-  }, [segment, pathname, client?.events?.disableNavigationEvents]);
-
-  useEffect(() => {
-    const interval = startPushingEventsQueue();
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (client?.events?.disableNavigationEvents) return;
+    if (client?.events?.disableStateEvents) return;
 
     let lastActiveMovementDate: Date;
     let lastInactiveMovementDate: Date;
@@ -103,7 +72,30 @@ const ExpofastAnalyticsProvider: FC<ExpofastAnalyticsProps> = ({
     return () => {
       subscription.remove();
     };
-  }, [client?.events?.disableNavigationEvents]);
+  }, [client?.events.disableNavigationEvents]);
+
+  useEffect(() => {
+    if (client?.events?.disableNavigationEvents) return;
+
+    const params = getPathParams(segment, pathname);
+    pushNavigationEvent({
+      type: "navigation",
+      path: `/${segment.join("/")}`,
+      date: getDateForApi(),
+      properties: Object.keys(params).length
+        ? {
+            params,
+          }
+        : undefined,
+    });
+  }, [segment, pathname, client?.events?.disableNavigationEvents]);
+
+  useEffect(() => {
+    const interval = startPushingEventsQueue();
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return <Fragment>{children}</Fragment>;
 };
