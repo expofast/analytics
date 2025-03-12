@@ -3,12 +3,12 @@ import { usePathname, useSegments } from "expo-router";
 import { AppState } from "react-native";
 import {
   config,
-  pushNavigationEvent,
-  pushStateEvent,
+  navigation,
   startPushingEventsQueue,
+  state,
   tryToPushEvents,
 } from "./core";
-import { getDateForApi, getPathParams } from "./utils";
+import { getPathParams } from "./utils";
 import { ExpoFastClient } from "./types";
 
 export interface ExpofastAnalyticsProps extends PropsWithChildren {
@@ -48,22 +48,14 @@ const ExpofastAnalyticsProvider: FC<ExpofastAnalyticsProps> = ({
         if (!shouldFireActiveStateEvent()) return;
 
         lastActiveMovementDate = new Date();
-        pushStateEvent({
-          type: "state",
-          date: getDateForApi(),
-          active: true,
-        });
+        state(true);
       }
 
       if (nextAppState === "inactive") {
         if (!shouldFireInactiveStateEvent()) return;
 
         lastInactiveMovementDate = new Date();
-        pushStateEvent({
-          type: "state",
-          date: getDateForApi(),
-          active: false,
-        });
+        state(false);
       }
 
       void tryToPushEvents();
@@ -72,22 +64,20 @@ const ExpofastAnalyticsProvider: FC<ExpofastAnalyticsProps> = ({
     return () => {
       subscription.remove();
     };
-  }, [client?.events.disableNavigationEvents]);
+  }, [client?.events?.disableStateEvents]);
 
   useEffect(() => {
     if (client?.events?.disableNavigationEvents) return;
 
     const params = getPathParams(segment, pathname);
-    pushNavigationEvent({
-      type: "navigation",
-      path: `/${segment.join("/")}`,
-      date: getDateForApi(),
-      properties: Object.keys(params).length
+    navigation(
+      `/${segment.join("/")}`,
+      Object.keys(params).length
         ? {
             params,
           }
         : undefined,
-    });
+    );
   }, [segment, pathname, client?.events?.disableNavigationEvents]);
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import * as Device from "expo-device";
+import * as SecureStore from "expo-secure-store";
 import { getDateForApi, logError, logEvent } from "./utils";
 import { uuidv7 } from "uuidv7";
 import {
@@ -7,7 +8,6 @@ import {
   ErrorEvent,
   ExpoFastAnalyticsConfig,
   ExpoFastAnalyticsEvent,
-  ExpoFastAnalyticsStorage,
   ExpoFastClient,
   IdentifyEvent,
   NavigationEvent,
@@ -30,10 +30,7 @@ export const createAnalyticsClient = (
     throw new Error("ExpoFast Analytics configuration apiKey is missing");
   }
 
-  void setIdentifyId({
-    setItem: configuration.storage.setItem,
-    getItem: configuration.storage.getItem,
-  });
+  setIdentifyId();
 
   config = {
     url: DEFAULT_API_URL,
@@ -46,16 +43,14 @@ export const createAnalyticsClient = (
 let identifyId: string;
 let userId: string;
 
-export const setIdentifyId = async ({
-  getItem,
-  setItem,
-}: ExpoFastAnalyticsStorage) => {
-  const key = "expofast-analytics::identify-id";
-  identifyId = await getItem(key);
+export const setIdentifyId = () => {
+  const key = "expofast-analytics_identify-id";
+  identifyId = SecureStore.getItem(key);
 
   if (!identifyId) {
     identifyId = uuidv7();
-    void setItem(key, identifyId);
+
+    void SecureStore.setItemAsync(key, identifyId);
   }
 };
 
@@ -126,16 +121,6 @@ export const startPushingEventsQueue = () => {
   return setInterval(tryToPushEvents, 3500);
 };
 
-export const pushNavigationEvent = (event: NavigationEvent) => {
-  if (config.debug) logEvent(event);
-  events.push(event);
-};
-
-export const pushStateEvent = (event: StateEvent) => {
-  if (config.debug) logEvent(event);
-  events.push(event);
-};
-
 const identify = (id: string, properties?: Record<string, unknown>) => {
   userId = id;
 
@@ -147,6 +132,34 @@ const identify = (id: string, properties?: Record<string, unknown>) => {
   } satisfies IdentifyEvent;
 
   if (config.debug) logEvent(event);
+  events.push(event);
+};
+
+export const state = (active?: boolean) => {
+  const event = {
+    type: "state",
+    active,
+    date: getDateForApi(),
+  } satisfies StateEvent;
+
+  if (config.debug) logEvent(event);
+
+  events.push(event);
+};
+
+export const navigation = (
+  path?: string,
+  properties?: Record<string, unknown>,
+) => {
+  const event = {
+    type: "navigation",
+    path,
+    date: getDateForApi(),
+    properties,
+  } satisfies NavigationEvent;
+
+  if (config.debug) logEvent(event);
+
   events.push(event);
 };
 

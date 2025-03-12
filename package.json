@@ -37,6 +37,7 @@
     "react": "^18",
     "react-native": "^0.76",
     "expo-device": "^7",
+    "expo-secure-store": "^14",
     "rollup": "^4",
     "rollup-plugin-dts": "^6",
     "typescript": "^5",
@@ -49,6 +50,7 @@
     "expo-device": "^7",
     "react": "^18",
     "react-native": "^0.76",
-    "uuidv7": "^1"
+    "uuidv7": "^1",
+    "expo-secure-store": "^14"
   }
 }

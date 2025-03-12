@@ -54,12 +54,6 @@ export type ExpoFastAnalyticsConfig = {
     disableNavigationEvents?: boolean;
     disableStateEvents?: boolean;
   };
-  storage: ExpoFastAnalyticsStorage;
-};
-
-export type ExpoFastAnalyticsStorage = {
-  setItem: (key: string, value: string) => void;
-  getItem: (key: string) => Promise<string | null>;
 };
 
 export type ExpoFastClient = ExpoFastAnalyticsConfig;
