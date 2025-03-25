@@ -1,3 +1,5 @@
+import type { AsyncStorageStatic } from "@react-native-async-storage/async-storage";
+
 export type ErrorEvent = {
   type: "error";
   message: string;
@@ -47,6 +49,7 @@ export type ExpoFastAnalyticsEvent =
 
 export type ExpoFastAnalyticsConfig = {
   apiKey: string;
+  asyncStorageInstance: AsyncStorageStatic;
   url?: string;
   appVersion?: string;
   debug?: boolean;

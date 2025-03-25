@@ -24,7 +24,7 @@ const ExpofastAnalyticsProvider: FC<ExpofastAnalyticsProps> = ({
 
   if (!config) {
     console.warn(
-      "ExpoFast Analytics is not properly configured, please call `createAnalyticsClient` before mounting the provider.",
+      "ExpoFast Analytics is not properly configured, please call and pass `createAnalyticsClient` to the provider.",
     );
   }
 
@@ -36,11 +36,11 @@ const ExpofastAnalyticsProvider: FC<ExpofastAnalyticsProps> = ({
 
     const shouldFireActiveStateEvent = () => {
       if (!lastActiveMovementDate) return true;
-      return lastActiveMovementDate.getTime() + 1000 < Date.now();
+      return lastActiveMovementDate.getTime() + 1500 < Date.now();
     };
     const shouldFireInactiveStateEvent = () => {
       if (!lastInactiveMovementDate) return true;
-      return lastInactiveMovementDate.getTime() + 1000 < Date.now();
+      return lastInactiveMovementDate.getTime() + 1500 < Date.now();
     };
 
     const subscription = AppState.addEventListener("change", (nextAppState) => {

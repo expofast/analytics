@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 import * as Device from "expo-device";
-import * as SecureStore from "expo-secure-store";
 import { getDateForApi, logError, logEvent } from "./utils";
 import { uuidv7 } from "uuidv7";
 import {
@@ -13,12 +12,16 @@ import {
   NavigationEvent,
   StateEvent,
 } from "./types";
+import type { AsyncStorageStatic } from "@react-native-async-storage/async-storage";
 
 const DEFAULT_API_URL = "https://expofast.app/api/analytics/push";
 
 let events: ExpoFastAnalyticsEvent[] = [];
 
 export let config: ExpoFastAnalyticsConfig;
+
+let identifyId: string;
+let userId: string;
 
 export const createAnalyticsClient = (
   configuration: ExpoFastAnalyticsConfig,
@@ -30,7 +33,7 @@ export const createAnalyticsClient = (
     throw new Error("ExpoFast Analytics configuration apiKey is missing");
   }
 
-  setIdentifyId();
+  void setIdentifyId(configuration.asyncStorageInstance);
 
   config = {
     url: DEFAULT_API_URL,
@@ -40,17 +43,19 @@ export const createAnalyticsClient = (
   return config;
 };
 
-let identifyId: string;
-let userId: string;
-
-export const setIdentifyId = () => {
+export const setIdentifyId = async (
+  asyncStorageInstance: AsyncStorageStatic,
+) => {
   const key = "expofast-analytics_identify-id";
-  identifyId = SecureStore.getItem(key);
-
-  if (!identifyId) {
-    identifyId = uuidv7();
-
-    void SecureStore.setItemAsync(key, identifyId);
+  try {
+    identifyId = await asyncStorageInstance.getItem(key);
+    if (!identifyId) {
+      identifyId = uuidv7();
+      void asyncStorageInstance.setItem(key, identifyId);
+      console.log(identifyId, "after");
+    }
+  } catch (e) {
+    console.error(`ExpoFast Analytics`, e);
   }
 };
 
@@ -118,7 +123,7 @@ export const tryToPushEvents = async () => {
 };
 
 export const startPushingEventsQueue = () => {
-  return setInterval(tryToPushEvents, 3500);
+  return setInterval(tryToPushEvents, 5000);
 };
 
 const identify = (id: string, properties?: Record<string, unknown>) => {
