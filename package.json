@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rollup -c",
     "prepare": "npm run build",
-    "publish": "npm run build && npm publish"
+    "push": "npm run build && npm publish"
   },
   "files": [
     "dist"
