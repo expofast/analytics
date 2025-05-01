@@ -51,7 +51,6 @@ export type ExpoFastAnalyticsConfig = {
   apiKey: string;
   asyncStorageInstance: AsyncStorageStatic;
   url?: string;
-  appVersion?: string;
   debug?: boolean;
   events?: {
     disableNavigationEvents?: boolean;

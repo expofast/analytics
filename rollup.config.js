@@ -3,7 +3,10 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import babel from "@rollup/plugin-babel";
 import dts from "rollup-plugin-dts";
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
+
+// Get all peerDeps as externals
+const external = [...Object.keys(packageJson.peerDependencies)];
 
 export default [
   {
@@ -12,7 +15,7 @@ export default [
       { file: packageJson.main, format: "cjs", sourcemap: true },
       { file: packageJson.module, format: "esm", sourcemap: true },
     ],
-    external: ["react", "react-native", "expo-router", "expo-modules-core"],
+    external,
     plugins: [
       resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
       commonjs(),

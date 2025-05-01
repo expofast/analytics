@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import * as Device from "expo-device";
+import * as Application from "expo-application";
 import { getDateForApi, logError, logEvent } from "./utils";
 import { uuidv7 } from "uuidv7";
 import {
@@ -13,6 +14,7 @@ import {
   StateEvent,
 } from "./types";
 import type { AsyncStorageStatic } from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 
 const DEFAULT_API_URL = "https://expofast.app/api/analytics/push";
 
@@ -46,13 +48,15 @@ export const createAnalyticsClient = (
 export const setIdentifyId = async (
   asyncStorageInstance: AsyncStorageStatic,
 ) => {
+  // remove error log on ssr environments
+  if (Platform.OS === "web" && typeof window === "undefined") return;
+
   const key = "expofast-analytics_identify-id";
   try {
     identifyId = await asyncStorageInstance.getItem(key);
     if (!identifyId) {
       identifyId = uuidv7();
       void asyncStorageInstance.setItem(key, identifyId);
-      console.log(identifyId, "after");
     }
   } catch (e) {
     console.error(`ExpoFast Analytics`, e);
@@ -62,6 +66,14 @@ export const setIdentifyId = async (
 let isPushingEvents = false;
 let consecutiveFailures = 0;
 let backoffUntil = 0;
+
+const getAppVersion = (): string => {
+  if (Platform.OS === "web") {
+    return Constants.expoConfig.version;
+  }
+
+  return Application.nativeApplicationVersion;
+};
 
 const pushEvents = async () => {
   try {
@@ -80,7 +92,7 @@ const pushEvents = async () => {
 
     const body = JSON.stringify({
       apiKey: config.apiKey,
-      appVersion: config.appVersion,
+      appVersion: getAppVersion() || "0.0.0",
       identifyId,
       userId,
       info,

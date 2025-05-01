@@ -1,7 +1,7 @@
 {
   "name": "expofast-analytics",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "An easy-to-use analytics library for React Native apps using `expo` and `expo-router`. It helps track user activity, including navigation events, user actions, app state changes, and errors, providing valuable insights into user behavior.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -44,7 +44,9 @@
     "@eslint/eslintrc": "^3",
     "@rollup/plugin-babel": "^6",
     "@babel/preset-react": "^7",
-    "@react-native-async-storage/async-storage": "^1.23"
+    "@react-native-async-storage/async-storage": "^1",
+    "expo-application": "^6",
+    "expo-constants": "^17"
   },
   "peerDependencies": {
     "expo-router": "^4",
@@ -52,6 +54,8 @@
     "react": "^18",
     "react-native": "^0.76",
     "uuidv7": "^1",
-    "@react-native-async-storage/async-storage": "^1.23"
+    "@react-native-async-storage/async-storage": "^1",
+    "expo-application": "^6",
+    "expo-constants": "^17"
   }
 }
